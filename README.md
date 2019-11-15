@@ -57,14 +57,14 @@ Soit sur des technologies sur lesquels je n'ai pas encore eu la chance de travai
 - Qgis 
 
 
-En termes plus technique, mon choix est tout de même réfléchi :
+En termes techniques, mon choix est tout de même réfléchi :
 - Python s'oriente vers le traitement du big data, vi à vi de la cartographie de lieux dans le monde, ce choix me semblait pertinent.
 
-- N'ayant que peu de temps et souhaitant réalisé un CRUD afin de pouvoir insérer facilement de nouvelles coordonnées dans une BDD, Flask se trouve être le framework parfait. Simple et très léger, grace à lui je vais pouvoir réaliser beaucoup de features plus ou moins complexe en peu de temps.
+- N'ayant que peu de temps et souhaitant réaliser un CRUD afin de pouvoir insérer facilement de nouvelles coordonnées dans une BDD, Flask se trouve être le framework parfait. Simple et très léger, grâce à lui je vais pouvoir réaliser beaucoup de features plus ou moins complexes en peu de temps.
 
-- En ce qui concerne Docker, ce n'est rien de plus qu'un caprice de ma part. Docker n'est pas viable en ce qui concerne les petis projets, en revanche si l'application venait à grossir, la question d'utiliser Docker pourrai bien se poser.
+- En ce qui concerne Docker, ce n'est rien de plus qu'un caprice de ma part. Docker n'est pas viable en ce qui concerne les petits projets, en revanche si l'application venait à grossir, la question d'utiliser Docker pourrait bien se poser.
 
-- Après quelques renseignement, prosgresql se trouve être la BDD parfaite pour le traitement de nombreuses coordonnées sur une carte. Le souci de la rapidité étant un des points les plus importants soulevé par l'intervenante, le choix fut rapidement fait.
+- Après m'être renseingé, prosgresql se trouve être la BDD parfaite pour le traitement de nombreuses coordonnées sur une carte. Le souci de la rapidité étant un des points les plus importants soulevés par l'intervenante, le choix fut rapidement fait.
 
 - L'utilisation de Postgis et de Qgis s'insèrent dans la même logique. Qgis fesant écho à postgis, il n'était pas concevable de passer à coté.
 
@@ -73,7 +73,7 @@ En termes plus technique, mon choix est tout de même réfléchi :
 
 ## Développement Docker/Flask/Postgresql pour le CRUD
 
-Après l'innitialisation de mon projet Flask, j'ai écris un `.gitignore` pour éviter tout conflits en cas de coworking du le projet.
+Après l'initialisation de mon projet Flask, j'ai écris un `.gitignore` pour éviter tout conflits en cas de co-working du le projet.
 
 Dans le cadre du projet, j'ai tout d'abord mis en place un conteneur docker `Postgresql` via dockerhub :
 https://hub.docker.com/_/postgres
@@ -84,23 +84,26 @@ docker run -it --rm --network some-network postgres psql -h some-postgres -U pos
 
 ![pgSC](./image/pg.png)
 
-Par la suite, j'ai modifier l'image pour finalement utilisé une image `postgis` couplé à une image `pgadmin` en concordance avec Qgis que j'utiliserai plus tard :
+Par la suite, j'ai modifié l'image pour finalement utiliser une image `postgis` couplé à une image `pgadmin`. Ce duo est en concordance avec Qgis que j'utiliserai plus tard :
 https://hub.docker.com/r/mdillon/postgis
 
-J'ai ensuite réalisé un fichier  `docker-compose.yaml` afin de pouvoir résalisé un montage rapide des conteneurs postgis et pgadmin
+J'ai ensuite réalisé un fichier  `docker-compose.yaml` afin de pouvoir résaliser un montage rapide des conteneurs postgis et pgadmin
 
-Voulant réalisé un CRUD dans le but d'insérer de nouveaux points de géolocalisation dans la base de donnée, j'ai réalisé une connexion basique à mon conteneur `postgis` disponible de le fichier `app.py`.
+Voulant réaliser un CRUD dans le but d'insérer de nouveaux points de géolocalisation dans la base de données, j'ai codé une connexion basique à mon conteneur `postgis` disponible dans le fichier `app.py`.
 
-Malheureusement ce point ne se sera jamais confirmé. A cause d'un bug de configuration de l'image `postgis` dans le package `psycopg2` et `pgdb` et selon certains forum, il m'aurai falu réinstaller toute ma configuration postgresql.
+Malheureusement ce point ne se sera jamais abouti. A cause d'un bug de configuration de l'image `postgis` dans le package `psycopg2` et `pgdb` et selon certains forums, il m'aurait fallu réinstaller toute ma configuration postgresql.
 
 ![pgSC](./image/error.png)
 
 ## Mapbox
 
 Mapbox étant simple d'utilisation, open source et gratuit (dans une limite d'environ 25000 requêtes par mois), il était évident de l'utiliser.
-Via flask et sa route par defaut `/`, j'ai implémenté une carte mapbox. L'outil étant du plug and play, sa simplicité ficilite grandement son implémentation.
+Via flask, j'ai inséré une carte mapbox. L'outil étant du plug and play, sa simplicité facilite grandement son implémentation.
 
-Dans le fichier `/template/map.html`, on peux trouve l'implémentation de la carte ainsi que les divers paramètres de custumisation que j'ai ajouté comme le style de map custom, le zoom ou le relief de l'océan.
+Dans le fichier `/template/map.html`, on peut trouver l'implémentation de la carte ainsi que les divers paramètres de custumisation que j'ai ajouté :
+ - style de map custom
+ - le zoom
+ - le relief de l'océan.
 
 
 Initialisation de l'access token pour accéder au style mapbox
@@ -131,20 +134,21 @@ La création d'un CRUD pour l'insertion des points un par un ayant été écart�
 
 ![schema](./image/mabu.png)
 
-Nous partons donc d'un socle Python3 + Flask sur lequel nous insérons une mapbox. Cette mapbox communique avec un conteneur docker contenant postgis, lui même communiquant avec un PGAdmin.
-Pour la création des premiers points de l'application , nous utiliserons  dans un premier temps l'outil Umap. Une fois les points créer,  nous utiliserons Qgis pour insérer le fichier GEOJson contenant les point.
-Qgis va alors envoyé toutes ces données dans la BDD postgis et seront visible sur PGadmin.
+Nous partons donc d'un socle `Python3 + Flask` sur lequel nous insérons une mapbox. Cette mapbox communique avec un conteneur `docker` contenant `postgis`, lui même communiquant avec un `PGAdmin`.
+Pour la création des premiers points de l'application , nous utiliserons  dans un premier temps l'outil `Umap`. Une fois les points créés, nous utiliserons `Qgis` pour insérer le fichier `GEOJson` contenant les points.
+`Qgis` va alors envoyer toutes ces données dans la BDD `postgis` et seront visibles sur `PGadmin`.
 
 Création d'un point dans Umap :
 ![umapscreen](./image/umapscreen.png)
 
-Importation d'un fichier GeoJson dans la BDD postgis via Qgis :
-![import](./image/importgeojson.gif)
-
 Connexion et insertion des points depuis Qgis :
 ![import](./image/qgisconnect.gif)
 
+Importation d'un fichier GeoJson dans la BDD postgis via Qgis :
+![import](./image/importgeojson.gif)
+
+
 ## Temps de développement & coûts
 
-Après avoir réalisé ce projet dans les grandes lignes en l'espace de 48h, nous pouvons considérer qu'un développeur freelance expérimenté en Python et postgres et Docker pourrait le réaliser en 1 mois.
-Le prix journalier moyen pour un développeur ayant ces compétences étant d'environ 500€, la prix du projet serai donc de 10.000€
+Après avoir réalisé ce projet dans les grandes lignes en l'espace de 48h, nous pouvons considérer qu'un développeur freelance expérimenté en Python et Postgres et Docker pourrait le réaliser en 1 mois.
+Le prix journalier moyen pour un développeur ayant ces compétences étant d'environ 500€, la prix du projet serait donc de 10.000€
