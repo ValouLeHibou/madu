@@ -1,0 +1,39 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: mdillon/postgis
+    environment:
+      - POSTGRES_USER=valentin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=mydb
+    volumes:
+       - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=valentin.guilbaud75013@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+       - pgadmin:/root/.pgadmin
+    ports:
+      - "8080:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:

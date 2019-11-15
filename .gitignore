@@ -12,6 +12,7 @@ var
 sdist
 develop-eggs
 .installed.cfg
+postgres-data
 
 # Installer logs
 pip-log.txt
