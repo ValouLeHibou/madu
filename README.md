@@ -8,17 +8,26 @@
 ![Qis](https://img.shields.io/badge/Qgis-3.1-gree)
 
 **Ce projet a été réalisé dans le cadre du hackathon de l'ECV digital**
-
-<!-- language: lang-none -->
-      ______ _______      __  _____  _       _ _        _ 
-     |  ____/ ____\ \    / / |  __ \(_)     (_) |      | |
-     | |__ | |     \ \  / /  | |  | |_  __ _ _| |_ __ _| |
-     |  __|| |      \ \/ /   | |  | | |/ _` | | __/ _` | |
-     | |___| |____   \  /    | |__| | | (_| | | || (_| | |
-     |______\_____|   \/     |_____/|_|\__, |_|\__\__,_|_|
-                                        __/ |             
-                                       |___/          
-
+                                                                       
+              _______  _______  _        _______ _________          _______  _                  
+    |\     /|(  ___  )(  ____ \| \    /\(  ___  )\__   __/|\     /|(  ___  )( (    /|           
+    | )   ( || (   ) || (    \/|  \  / /| (   ) |   ) (   | )   ( || (   ) ||  \  ( |           
+    | (___) || (___) || |      |  (_/ / | (___) |   | |   | (___) || |   | ||   \ | |           
+    |  ___  ||  ___  || |      |   _ (  |  ___  |   | |   |  ___  || |   | || (\ \) |           
+    | (   ) || (   ) || |      |  ( \ \ | (   ) |   | |   | (   ) || |   | || | \   |           
+    | )   ( || )   ( || (____/\|  /  \ \| )   ( |   | |   | )   ( || (___) || )  \  |           
+    |/     \||/     \|(_______/|_/    \/|/     \|   )_(   |/     \|(_______)|/    )_)           
+                                                                                                
+     _______  _______             ______  _________ _______ __________________ _______  _       
+    (  ____ \(  ____ \|\     /|  (  __  \ \__   __/(  ____ \\__   __/\__   __/(  ___  )( \      
+    | (    \/| (    \/| )   ( |  | (  \  )   ) (   | (    \/   ) (      ) (   | (   ) || (      
+    | (__    | |      | |   | |  | |   ) |   | |   | |         | |      | |   | (___) || |      
+    |  __)   | |      ( (   ) )  | |   | |   | |   | | ____    | |      | |   |  ___  || |      
+    | (      | |       \ \_/ /   | |   ) |   | |   | | \_  )   | |      | |   | (   ) || |      
+    | (____/\| (____/\  \   /    | (__/  )___) (___| (___) |___) (___   | |   | )   ( || (____/\
+    (_______/(_______/   \_/     (______/ \_______/(_______)\_______/   )_(   |/     \|(_______/
+                                                                                            
+                                                                                                                                                     
 Groupe 6 :
 
 - GUILBAUD Valentin_____M1 DEV
@@ -41,6 +50,7 @@ Soit sur des technologies sur lesquels je n'ai pas encore eu la chance de travai
 - Postgres
 - Postgis
 - pgadmin
+- Mapbox
 - Qgis 
 
 
@@ -60,6 +70,8 @@ En termes plus technique, mon choix est tout de même réfléchi :
 
 ## Développement Docker/Flask/Postgresql pour le CRUD
 
+Après l'innitialisation de mon projet Flask, j'ai écris un `.gitignore` pour éviter tout conflits en cas de coworking du le projet.
+
 Dans le cadre du projet, j'ai tout d'abord mis en place un conteneur docker `Postgresql` via dockerhub :
 https://hub.docker.com/_/postgres
 
@@ -67,6 +79,7 @@ https://hub.docker.com/_/postgres
 docker run -it --rm --network some-network postgres psql -h some-postgres -U postgre
 ```
 
+![pgSC](./image/pg.png)
 
 Par la suite, j'ai modifier l'image pour finalement utilisé une image `postgis` couplé à une image `pgadmin` en concordance avec Qgis que j'utiliserai plus tard :
 https://hub.docker.com/r/mdillon/postgis
@@ -75,8 +88,39 @@ J'ai ensuite réalisé un fichier  `docker-compose.yaml` afin de pouvoir résali
 
 Voulant réalisé un CRUD dans le but d'insérer de nouveaux points de géolocalisation dans la base de donnée, j'ai réalisé une connexion basique à mon conteneur `postgis` disponible de le fichier `app.py`.
 
-Malheureusement ce point ne se sera jamais confirmé. A cause d'un bug de configuration de l'image `postgis` dans le package `psycopg2` et selon certains forum, il m'aurai falu réinstaller toute ma configuration postgresql.
+Malheureusement ce point ne se sera jamais confirmé. A cause d'un bug de configuration de l'image `postgis` dans le package `psycopg2` et `pgdb` et selon certains forum, il m'aurai falu réinstaller toute ma configuration postgresql.
 
+![pgSC](./image/error.png)
+
+## Mapbox
+
+Mapbox étant simple d'utilisation, open source et gratuit (dans une limite d'environ 25000 requêtes par mois), il était évident de l'utiliser.
+Via flask et sa route par defaut `/`, j'ai implémenté une carte mapbox. L'outil étant du plug and play, sa simplicité ficilite grandement son implémentation.
+
+Dans le fichier `/template/map.html`, on peux trouve l'implémentation de la carte ainsi que les divers paramètres de custumisation que j'ai ajouté comme le style de map custom, le zoom ou le relief de l'océan.
+
+
+Initialisation de l'access token pour accéder au style mapbox
+```
+mapboxgl.accessToken = 'pk.eyJ1IjoidmFsb3VsZWhpYm91IiwiYSI6ImNrMnlqeGFmMDAwZXkzb2w5cDh1a3NqcjEifQ.qbPvftgv6VYjt3B1CgmYeg';
+``` 
+
+URL du style de carte
+```
+style: 'mapbox://styles/mapbox/streets-v11',
+// URL d'un Style custom (un style custome necessite un token différent) :
+// mapbox://styles/antoinevenco/ck2z3qbs609rg1clidl62m7j0
+```
+
+![style](./image/style.gif)
+
+Définition du zoom au chargement de la page ainsi que de la longitude et latitude par défaut
+```
+zoom: 4,
+center: [2.3488, 48.8534]
+```
+
+![Zoom](./image/zoom.gif)
 
 ## Qgis  
 

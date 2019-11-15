@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <title>MABU</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet'/>
+    <link href='../static/style.css' rel='stylesheet'/>
+</head>
+<body>
+
+
+<div id='map'></div>
+<div id='menu'>
+    <input id='mapbox/streets-v11' type='radio' name='rtoggle' value='streets' checked='checked'>
+    <label for='mapbox/streets'>streets</label>
+    <input id='mapbox/light-v10' type='radio' name='rtoggle' value='light'>
+    <label for='mapbox/light'>light</label>
+    <input id='mapbox/dark-v10' type='radio' name='rtoggle' value='dark'>
+    <label for='mapbox/dark'>dark</label>
+    <input id='mapbox/outdoors-v11' type='radio' name='rtoggle' value='outdoors'>
+    <label for='mapbox/outdoors'>outdoors</label>
+    <input id='mapbox/satellite-v9' type='radio' name='rtoggle' value='satellite'>
+    <label for='mapbox/satellite'>satellite</label>
+</div>
+
+<button id='zoom'>Zoom to buildings</button>
+
+<script>
+    // ##################### CHARGEMENT DE LA CARTE #########################
+    mapboxgl.accessToken = 'pk.eyJ1IjoidmFsb3VsZWhpYm91IiwiYSI6ImNrMnlqeGFmMDAwZXkzb2w5cDh1a3NqcjEifQ.qbPvftgv6VYjt3B1CgmYeg';
+    //TOKEN FOR CUSTOM STYLE : pk.eyJ1IjoiYW50b2luZXZlbmNvIiwiYSI6ImNqb2ZsbTJ2ODAzdTYzcW13bGZzaWtyYm0ifQ.42QdskwrPpauYgi6-aY8fg
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        // CUSTOM STYLE : mapbox://styles/antoinevenco/ck2z3qbs609rg1clidl62m7j0
+        zoom: 4,
+        center: [2.3488, 48.8534]
+    });
+
+    map.on('load', function () {
+        map.setPaintProperty('building', 'fill-color', [
+            "interpolate",
+            ["exponential", 0.5],
+            ["zoom"],
+            15,
+            "#e2714b",
+            22,
+            "#eee695"
+        ]);
+
+        map.setPaintProperty('building', 'fill-opacity', [
+            "interpolate",
+            ["exponential", 0.5],
+            ["zoom"],
+            15,
+            0,
+            22,
+            1
+        ]);
+    });
+
+<!-- ##################### ZOOM ######################### -->
+    document.getElementById('zoom').addEventListener('click', function () {
+        map.zoomTo(19, {duration: 9000});
+    });
+
+<!-- ##################### MAP STYLE ######################### -->
+
+    var layerList = document.getElementById('menu');
+    var inputs = layerList.getElementsByTagName('input');
+
+    function switchLayer(layer) {
+        var layerId = layer.target.id;
+        map.setStyle('mapbox://styles/' + layerId);
+    }
+
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].onclick = switchLayer;
+    }
+
+    <!-- ##################### OCEAN ######################### -->
+
+    map.on('load', function () {
+
+        map.addSource('10m-bathymetry-81bsvj', {
+            type: 'vector',
+            url: 'mapbox://mapbox.9tm8dx88'
+        });
+
+        map.addLayer({
+            "id": "10m-bathymetry-81bsvj",
+            "type": "fill",
+            "source": "10m-bathymetry-81bsvj",
+            "source-layer": "10m-bathymetry-81bsvj",
+            "layout": {},
+            "paint": {
+                "fill-outline-color": "hsla(337, 82%, 62%, 0)",
+                "fill-color": ["interpolate",
+                    ["cubic-bezier",
+                        0, 0.5,
+                        1, 0.5],
+                    ["get", "DEPTH"],
+                    200, "#78bced",
+                    9000, "#15659f"
+                ]
+            }
+        }, 'land-structure-polygon');
+    });
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

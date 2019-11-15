@@ -1,4 +1,3 @@
-import pgdb
 from flask_sqlalchemy import SQLAlchemy
 
 from flask import Flask
@@ -23,11 +22,16 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/home", methods=["GET", "POST"])
 def home():
     if request.form:
         print(request.form)
     return render_template("home.html")
+
+
+@app.route("/")
+def mapbox():
+    return render_template("map.html")
 
 
 if __name__ == '__main__':
