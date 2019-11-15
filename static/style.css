@@ -11,20 +11,15 @@ body {
 }
 
 #menu {
-        position: absolute;
+    position: absolute;
+        bottom: 5%;
         background: #fff;
         padding: 10px;
         font-family: 'Open Sans', sans-serif;
     }
 
-#menu-ocean {
-    position: absolute;
-    top: 10%;
-    background: #fff;
-    padding: 10px;
-    font-family: 'Open Sans', sans-serif;
-}
-    #zoom {
+
+#zoom {
     display: block;
     position: relative;
     margin: 20px auto;
