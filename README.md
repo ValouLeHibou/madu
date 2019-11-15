@@ -1,4 +1,5 @@
-# MADU
+# MADU 
+
 
 ![Python](https://img.shields.io/badge/Python-3.6-yellow)
 ![Flask](https://img.shields.io/badge/Flask-1.1.1-lightgrey)
@@ -6,6 +7,7 @@
 ![Postgres](https://img.shields.io/badge/Postgres-11.0-purple)
 ![Postgis](https://img.shields.io/badge/Postgis-2.5-green)
 ![Qis](https://img.shields.io/badge/Qgis-3.1-gree)
+
 
 **Ce projet a été réalisé dans le cadre du hackathon de l'ECV digital**
                                                                        
@@ -51,6 +53,7 @@ Soit sur des technologies sur lesquels je n'ai pas encore eu la chance de travai
 - Postgis
 - pgadmin
 - Mapbox
+- Umap
 - Qgis 
 
 
@@ -122,6 +125,26 @@ center: [2.3488, 48.8534]
 
 ![Zoom](./image/zoom.gif)
 
-## Qgis  
+## Umap & Qgis  
 
-Pour palier à ce manque, l'outil `Qgis` à fait son apparation.
+La création d'un CRUD pour l'insertion des points un par un ayant été écarté, l'outil `Qgis` couplé à `UMAP` à fait son apparation.
+
+![schema](./image/mabu.png)
+
+Nous partons donc d'un socle Python3 + Flask sur lequel nous insérons une mapbox. Cette mapbox communique avec un conteneur docker contenant postgis, lui même communiquant avec un PGAdmin.
+Pour la création des premiers points de l'application , nous utiliserons  dans un premier temps l'outil Umap. Une fois les points créer,  nous utiliserons Qgis pour insérer le fichier GEOJson contenant les point.
+Qgis va alors envoyé toutes ces données dans la BDD postgis et seront visible sur PGadmin.
+
+Création d'un point dans Umap :
+![umapscreen](./image/umapscreen.png)
+
+Importation d'un fichier GeoJson dans la BDD postgis via Qgis :
+![import](./image/importgeojson.gif)
+
+Connexion et insertion des points depuis Qgis :
+![import](./image/qgisconnect.gif)
+
+## Temps de développement & coûts
+
+Après avoir réalisé ce projet dans les grandes lignes en l'espace de 48h, nous pouvons considérer qu'un développeur freelance expérimenté en Python et postgres et Docker pourrait le réaliser en 1 mois.
+Le prix journalier moyen pour un développeur ayant ces compétences étant d'environ 500€, la prix du projet serai donc de 10.000€
